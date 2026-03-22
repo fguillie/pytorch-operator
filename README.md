@@ -68,6 +68,9 @@ kubectl get pods -n pytorch-operator
 
 ## PyTorchJob example
 
+> **Note:** A `command` is required. The NGC PyTorch container has no default long-running
+> entrypoint — without one the pod exits immediately and enters `CrashLoopBackOff`.
+
 ```yaml
 apiVersion: pytorch.nvidia.com/v1alpha1
 kind: PyTorchJob
@@ -77,23 +80,24 @@ metadata:
 spec:
   # NVIDIA NGC PyTorch container tag
   # Browse tags at https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch
-  pytorchVersion: "24.01-py3"
+  pytorchVersion: "26.02-py3"
   # nvidia.com/gpu resources per pod
-  gpuCount: 2
+  gpuCount: 1
   # Number of pods (default: 1)
   replicas: 1
   # Optional: override base image (default: nvcr.io/nvidia/pytorch)
   # image: "nvcr.io/nvidia/pytorch"
-  # Optional: custom entrypoint
-  # command: ["python", "-c"]
-  # args: ["import torch; print(torch.cuda.device_count())"]
+  command: ["python", "-c"]
+  args: ["import torch; print('GPUs:', torch.cuda.device_count()); import time; time.sleep(3600)"]
 ```
+
+A ready-to-use sample is available at `config/samples/example1.yaml`.
 
 Apply from the **repository root** (`pytorch-operator/`):
 
 ```bash
 # from pytorch-operator/
-kubectl apply -f config/samples/pytorchjob_v1alpha1_example.yaml
+kubectl apply -f config/samples/example1.yaml
 ```
 
 Watch status:
