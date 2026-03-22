@@ -1,0 +1,107 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: pytorchjobs.pytorch.nvidia.com
+spec:
+  group: pytorch.nvidia.com
+  names:
+    kind: PyTorchJob
+    listKind: PyTorchJobList
+    plural: pytorchjobs
+    singular: pytorchjob
+    shortNames:
+      - ptjob
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: PyTorch Version
+          type: string
+          jsonPath: .spec.pytorchVersion
+        - name: GPUs
+          type: integer
+          jsonPath: .spec.gpuCount
+        - name: Replicas
+          type: integer
+          jsonPath: .spec.replicas
+        - name: Ready
+          type: integer
+          jsonPath: .status.readyReplicas
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - pytorchVersion
+                - gpuCount
+              properties:
+                pytorchVersion:
+                  type: string
+                  description: >
+                    NVIDIA PyTorch container version tag (e.g. "24.01-py3").
+                    Appended to the base image as <image>:<pytorchVersion>.
+                gpuCount:
+                  type: integer
+                  minimum: 1
+                  description: Number of nvidia.com/gpu resources to allocate per pod.
+                replicas:
+                  type: integer
+                  minimum: 1
+                  default: 1
+                  description: Number of pods to run (default 1).
+                image:
+                  type: string
+                  description: >
+                    Base container image override (default: nvcr.io/nvidia/pytorch).
+                    pytorchVersion is appended as the tag.
+                command:
+                  type: array
+                  items:
+                    type: string
+                  description: Override the container entrypoint.
+                args:
+                  type: array
+                  items:
+                    type: string
+                  description: Arguments passed to the container entrypoint.
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                  description: "Current lifecycle phase: Pending, Running, Ready, or Failed."
+                readyReplicas:
+                  type: integer
+                  description: Number of pods currently ready.
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - type
+                      - status
+                      - lastTransitionTime
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                        format: date-time

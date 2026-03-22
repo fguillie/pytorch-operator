@@ -1,0 +1,12 @@
+apiVersion: v2
+name: pytorch-operator
+description: Kubernetes operator that manages NVIDIA PyTorch containers via the PyTorchJob CRD
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - pytorch
+  - nvidia
+  - gpu
+  - operator
+  - machine-learning

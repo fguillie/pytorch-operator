@@ -1,0 +1,83 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "pytorch-operator.fullname" . }}
+  labels:
+    {{- include "pytorch-operator.labels" . | nindent 4 }}
+rules:
+  # Manage PyTorchJob resources and their status.
+  - apiGroups:
+      - pytorch.nvidia.com
+    resources:
+      - pytorchjobs
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - pytorch.nvidia.com
+    resources:
+      - pytorchjobs/status
+    verbs:
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - pytorch.nvidia.com
+    resources:
+      - pytorchjobs/finalizers
+    verbs:
+      - update
+
+  # Manage Deployments owned by PyTorchJobs.
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+
+  # Emit events.
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+
+  # Leader election (ConfigMaps / Leases).
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete

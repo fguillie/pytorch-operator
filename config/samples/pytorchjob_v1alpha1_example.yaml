@@ -1,0 +1,17 @@
+apiVersion: pytorch.nvidia.com/v1alpha1
+kind: PyTorchJob
+metadata:
+  name: pytorch-training
+  namespace: default
+spec:
+  # NVIDIA NGC PyTorch container tag — see https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch
+  pytorchVersion: "24.01-py3"
+  # Number of nvidia.com/gpu resources per pod
+  gpuCount: 2
+  # Number of pods (default: 1)
+  replicas: 1
+  # Optional: override base image (default: nvcr.io/nvidia/pytorch)
+  # image: "nvcr.io/nvidia/pytorch"
+  # Optional: custom entrypoint
+  # command: ["python", "-c"]
+  # args: ["import torch; print(torch.cuda.device_count())"]

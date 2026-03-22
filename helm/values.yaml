@@ -1,0 +1,33 @@
+# Number of operator replicas (set to >1 with leaderElect: true for HA).
+replicaCount: 1
+
+image:
+  repository: ghcr.io/pytorch-operator/pytorch-operator
+  pullPolicy: IfNotPresent
+  tag: "0.1.0"
+
+imagePullSecrets: []
+
+serviceAccount:
+  # Set to false to use an existing service account.
+  create: true
+  # Override the service account name; defaults to the full name helper.
+  name: ""
+  annotations: {}
+
+# Leader election — enable when replicaCount > 1.
+leaderElect: false
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 64Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
