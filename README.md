@@ -14,14 +14,18 @@ It creates and reconciles `Deployments` backed by NGC PyTorch images with GPU re
 
 ## Build the image
 
+Run from the **repository root** (`pytorch-operator/`):
+
 > **Note:** `go.sum` must exist before building. If it is absent, generate it first:
 > ```bash
+> # from pytorch-operator/
 > go mod tidy
 > ```
 
 Build for `linux/amd64` (pass `TARGETARCH` explicitly when building from an ARM host):
 
 ```bash
+# from pytorch-operator/
 podman build \
   --no-cache \
   --platform linux/amd64 \
@@ -33,6 +37,8 @@ podman build \
 
 ## Publish the image
 
+Run from any directory:
+
 ```bash
 podman push quay.io/fguillier/pytorch-operator:0.1.0
 ```
@@ -41,7 +47,10 @@ podman push quay.io/fguillier/pytorch-operator:0.1.0
 
 ## Deploy via Helm
 
+Run from the **repository root** (`pytorch-operator/`):
+
 ```bash
+# from pytorch-operator/
 helm install pytorch-operator ./helm \
   --namespace pytorch-operator --create-namespace \
   --set image.repository=quay.io/fguillier/pytorch-operator \
@@ -80,9 +89,10 @@ spec:
   # args: ["import torch; print(torch.cuda.device_count())"]
 ```
 
-Apply:
+Apply from the **repository root** (`pytorch-operator/`):
 
 ```bash
+# from pytorch-operator/
 kubectl apply -f config/samples/pytorchjob_v1alpha1_example.yaml
 ```
 
